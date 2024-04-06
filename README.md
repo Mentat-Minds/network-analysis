@@ -1,1 +1,2 @@
-# mentat-minds
+# Mentat Minds
+
