@@ -1,5 +1,3 @@
-# Mentat Minds
+# Network Analysis
 
-### A repository for all the Bittensor work from Mentat Minds
-
-Validator, miner, analytics, whatever we want. 
+A repo to analyze the network, with a special focus on subnets and validators.
