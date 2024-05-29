@@ -43,7 +43,7 @@ async function taoRecycledAtBlock (block: number) {
     const results = await apiAt.query.subtensorModule.raoRecycledForRegistration.multi(subnets);
     const finalResult = results.map(result => Number(JSON.stringify(result, null, 2)))
     
-    console.log(finalResult);
+    // console.log(finalResult);
     return finalResult;
 }
 
@@ -62,6 +62,7 @@ async function TAORecycledInterval(blockStart:number, blockEnd: number) {
 // this function gives the number of TAO recycled for a specific subnet 
 // for each step of the period between the two blocks
 async function TAORecycledbyPeriod(startDate: Date, subnet: number, blockStart:number, blockEnd:number, step: number) {
+    const index = subnet - 1
     const blocks = Array.from(range(blockStart, blockEnd, step));
     const newDate = new Date(startDate);
 
@@ -74,13 +75,15 @@ async function TAORecycledbyPeriod(startDate: Date, subnet: number, blockStart:n
         const dateString = format(toZonedTime(newDate, 'UTC'), 'yyyy-MM-dd');
         datesArray.push(dateString)
         const result = await taoRecycledAtBlock(blocks[block]);
-        resultArray.push(result[subnet])
+        resultArray.push(result[index]/10**9)
     }
-    const transformedResult = resultArray.map((value, i, arr) => i === 0 ? value : roundTo((value - arr[i - 1])/10**9, 2));
+    console.log(resultArray)
+    const transformedResult = resultArray.map((value, i, arr) => i === 0 ? value : roundTo((value - arr[i - 1]), 2));
     const dict = zipArraysToDict(datesArray, transformedResult)
     delete dict[Object.keys(dict)[0]];
     console.log(dict)
     return dict
 }
 
-TAORecycledInterval(2989227, 3061227).catch(console.error).finally(() => process.exit());
+TAORecycledbyPeriod(new Date('2024-04-05'), 2, 2701227 , 3062120, 7200).catch(console.error).finally(() => process.exit());
+// TAORecycledInterval(2990120 , 3062120).catch(console.error).finally(() => process.exit());
