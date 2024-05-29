@@ -10,23 +10,52 @@ const roundTo = function(num: number, places: number) {
     const factor = 10 ** places;
     return Math.round(num * factor) / factor;
 };
+
+// Define the function to sum arrays element-wise
+function sumArrays(arr1: number[], arr2: number[]): number[] {
+    return arr1.map((num, idx) => num + (arr2[idx] || 0));
+}
   
-
-async function taoRecycledAtBlock (block: number) {
+async function getRegsAtBlock (api: ApiPromise, block: number) {
     // Construct
-    const wsProvider = new WsProvider('wss://archive.chain.opentensor.ai:443');
-    const api = await ApiPromise.create({ provider: wsProvider });
-
     // get block hash and set the api
+    //const wsProvider = new WsProvider('wss://archive.chain.opentensor.ai:443');
+    //const api = await ApiPromise.create({ provider: wsProvider });
+
     const hash = await api.rpc.chain.getBlockHash(block);
     const apiAt = await api.at(hash);
 
     // get the results and convert them
-    const results = await apiAt.query.subtensorModule.raoRecycledForRegistration.multi(subnets);
+    const results = await apiAt.query.subtensorModule.registrationsThisBlock.multi(subnets);
     const finalResult = results.map(result => Number(JSON.stringify(result, null, 2)))
-    // console.log(finalResult);
+
+    console.log(finalResult);
     return finalResult;
 }
+
+// Main function to get the cumulative result
+async function getCumulativeRegs24h(block: number) {
+    // Construct the API provider outside the loop
+    const wsProvider = new WsProvider('wss://archive.chain.opentensor.ai:443');
+    const api = await ApiPromise.create({ provider: wsProvider });
+
+    const rangeStart = block - 7200;
+    let cumulativeRegs: number[] = [];
+
+    for (let currentBlock = rangeStart; currentBlock <= block; currentBlock++) {
+        const finalResult = await getRegsAtBlock(api, currentBlock);
+        if (cumulativeRegs.length === 0) {
+            cumulativeRegs = finalResult;
+        } else {
+            cumulativeRegs = sumArrays(cumulativeRegs, finalResult);
+        }
+    }
+
+    console.log(cumulativeRegs)
+    return cumulativeRegs;
+}
+
+/*
 
 async function weeklyTaoRecycled() {
     // Construct
@@ -67,5 +96,9 @@ async function stats() {
     console.log(result)
     return result
 }
-
-stats().catch(console.error).finally(() => process.exit());
+*/
+console.time('Execution Time');
+getCumulativeRegs24h(3046828).catch(console.error).finally(() => {
+    console.timeEnd('Execution Time');
+    process.exit()
+});
