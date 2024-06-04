@@ -85,5 +85,5 @@ async function TAORecycledbyPeriod(startDate: Date, subnet: number, blockStart:n
     return dict
 }
 
-TAORecycledbyPeriod(new Date('2024-04-05'), 2, 2701227 , 3062120, 7200).catch(console.error).finally(() => process.exit());
-// TAORecycledInterval(2990120 , 3062120).catch(console.error).finally(() => process.exit());
+TAORecycledbyPeriod(new Date('2024-05-20'), 25, 2998150 , 3070150, 7200).catch(console.error).finally(() => process.exit());
+// TAORecycledInterval(3011720 , 3062120).catch(console.error).finally(() => process.exit());
