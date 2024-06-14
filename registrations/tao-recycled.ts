@@ -62,6 +62,7 @@ async function TAORecycledInterval(blockStart:number, blockEnd: number) {
 // this function gives the number of TAO recycled for a specific subnet 
 // for each step of the period between the two blocks
 async function TAORecycledbyPeriod(startDate: Date, subnet: number, blockStart:number, blockEnd:number, step: number) {
+    console.time('scriptRuntime'); // Start the timer
     const index = subnet - 1
     const blocks = Array.from(range(blockStart, blockEnd, step));
     const newDate = new Date(startDate);
@@ -82,8 +83,9 @@ async function TAORecycledbyPeriod(startDate: Date, subnet: number, blockStart:n
     const dict = zipArraysToDict(datesArray, transformedResult)
     delete dict[Object.keys(dict)[0]];
     console.log(dict)
+    console.timeEnd('scriptRuntime');
     return dict
 }
 
-// TAORecycledbyPeriod(new Date('2024-05-20'), 25, 2998150 , 3070150, 7200).catch(console.error).finally(() => process.exit());
-TAORecycledInterval(3070260, 3120660).catch(console.error).finally(() => process.exit());
+TAORecycledbyPeriod(new Date('2024-05-24'), 12, 3025774 , 3126574, 7200).catch(console.error).finally(() => process.exit());
+// TAORecycledInterval(3070260, 3120660).catch(console.error).finally(() => process.exit());
