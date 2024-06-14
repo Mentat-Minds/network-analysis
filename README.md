@@ -4,6 +4,10 @@ A repo to analyze the network, with a special focus on subnets and validators.
 
 ## Emissions
 
+The Root Network notebook shows the distribution of weights from validators, and their change for the last month. Only the top 5 are displayed, but you can easily make the graph for any other validator.
+
+## Emissions
+
 This folder contains a notebook analyzing the historical emissions on specific subnets.
 
 ## Registrations
